@@ -1,0 +1,58 @@
+blueprint:
+  name: Smoke Detector Notification - 0.1
+  description: |
+    Send a notification when one of the selected smoke detectors detects smoke.
+
+  domain: automation
+  input:
+    smoke_detectors:
+      name: Smoke Detectors
+      description: Select the smoke detectors to monitor.
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: smoke
+          multiple: true
+    notification_title:
+      name: Notification Title
+      description: Title for the notification. You can use {{ sensor_friendly_name }} and {{ sensor_area_name }} to include the name and area of the triggered smoke detector.
+      default: "🔥Smoke Detected in {{ sensor_area_name }}"
+      selector:
+        text:
+    notification_message:
+      name: Notification Message
+      description: Message for the notification. You can use {{ sensor_friendly_name }} and {{ sensor_area_name }} to include the name and area of the triggered smoke detector.
+      default: "Smoke detected in {{ sensor_area_name }} - {{ sensor_friendly_name }}."
+      selector:
+        text:
+    notification_service:
+      name: Notification Service
+      default: "notify.notify"
+      description: Select the notification service to use. for example, `notify.mobile_app_your_device`, `notify.another_service`, etc.
+      selector:
+        text:
+
+variables:
+  sensor_area_name: "{{ area_name(trigger.to_state.entity_id) }}"
+  sensor_friendly_name: "{{ state_attr(trigger.to_state.entity_id, 'friendly_name') }}"
+
+trigger:
+- platform: state
+  entity_id: !input smoke_detectors
+  to: 'on'
+
+action:
+- service: !input notification_service
+  data:
+    title: !input notification_title
+    message: !input notification_message
+    data:
+      ttl: 0
+      priority: high
+      push:
+        sound:
+          name: "default"
+          critical: 1
+          volume: 1.0
+  
+mode: parallel

@@ -1,5 +1,5 @@
 blueprint:
-  name: Smoke Detector Notification - 0.1
+  name: Smoke Detector Notification - 0.2
   description: |
     Send a notification when one of the selected smoke detectors detects smoke.
 
@@ -46,8 +46,8 @@ action:
   data:
     title: !input notification_title
     message: !input notification_message
-    notification_icon: mdi:smoke-detector-alert
     data:
+      notification_icon: mdi:smoke-detector-alert
       ttl: 0
       priority: high
       push:

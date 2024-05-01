@@ -46,6 +46,7 @@ action:
   data:
     title: !input notification_title
     message: !input notification_message
+    notification_icon: mdi:smoke-detector-alert
     data:
       ttl: 0
       priority: high
